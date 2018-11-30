@@ -29,7 +29,9 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,9 +51,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * A dummy authentication store containing known user names and passwords.
      * TODO: remove after connecting to a real authentication system.
      */
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "foo@example.com:hello", "bar@example.com:world"
-    };
+    private static  ArrayList<String> DUMMY_CREDENTIALS ;//= new String[]{
+
+     //       "foo@example.com:hello", "bar@example.com:world"
+
+   // };
+
+
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
@@ -70,7 +76,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
-
+        DUMMY_CREDENTIALS = new ArrayList<>();
+        DUMMY_CREDENTIALS.add("a@:12345");
+        DUMMY_CREDENTIALS.add("b@.54321");
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -186,6 +194,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
+
             mAuthTask = new UserLoginTask(email, password);
             mAuthTask.execute((Void) null);
         }
@@ -299,10 +308,17 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         private final String mEmail;
         private final String mPassword;
+        private boolean isNewAccount = false;
 
         UserLoginTask(String email, String password) {
             mEmail = email;
             mPassword = password;
+        }
+
+        @Override
+        protected void onPreExecute() {
+
+            super.onPreExecute();
         }
 
         @Override
@@ -316,7 +332,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 return false;
             }
 
-            for (String credential : DUMMY_CREDENTIALS) {
+            for (String credential : DUMMY_CREDENTIALS ) {
                 String[] pieces = credential.split(":");
                 if (pieces[0].equals(mEmail)) {
                     // Account exists, return true if the password matches.
@@ -324,8 +340,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 }
             }
 
+
             // TODO: register the new account here.
-            return true;
+            DUMMY_CREDENTIALS.add(mEmail+":"+mPassword);
+            isNewAccount = true;
+
+            return false;
         }
 
         @Override
@@ -340,8 +360,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 startActivity(userPageIntent);
 
             } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
+                if (!isNewAccount) {
+                    mPasswordView.setError(getString(R.string.error_incorrect_password));
+                    mPasswordView.requestFocus();
+                }
+                else
+                Toast.makeText(getBaseContext(),"Acocunt Created",Toast.LENGTH_LONG).show();
             }
         }
 
