@@ -15,16 +15,16 @@ public class UserFragmentAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-       /* switch (position) {
+       switch (position) {
             case 0:
-                return new AlhasaGardens();
-            case 1:
-                return new AlhasaMallsFragment();
+                return new FoodFragment();
+           case 1:
+                return new FoodFragment();
             case 2:
-                return new AlhasaRestaurant();
+                return new FoodFragment();
             case 3:
-                return new AlhasaEventsFragment();
-        }*/
+                return new FoodFragment();
+        }
 
         return null;
     }

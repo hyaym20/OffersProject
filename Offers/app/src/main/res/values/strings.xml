@@ -14,4 +14,9 @@
         completions."
     </string>
     <string name="welcome">Welcome to our Offers application, please login or register.</string>
+
+    <!-- Offers Info String ((tmp)) -->
+    <string name="type">Banana</string>
+    <string name="price">20 SR</string>
+    <string name="location">Al-Othaim Mall</string>
 </resources>
