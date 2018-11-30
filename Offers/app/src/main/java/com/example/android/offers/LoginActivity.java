@@ -20,6 +20,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -32,6 +33,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.lang.reflect.Array;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,6 +50,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     /**
      * Id to identity READ_CONTACTS permission request.
      */
+
     private static final int REQUEST_READ_CONTACTS = 0;
 
     /**
@@ -75,6 +81,30 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         setContentView(R.layout.activity_login);
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
+
+        Log.wtf("LoginActivity","Heeeeeereeeee~");
+       ////////////////////////////////////////////////////////////
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            Connection con = DriverManager.getConnection(
+                    "jdbc:mysql://sql150.main-hosting.eu:3306/u572021306_ytuju", "u572021306_uxyze", "Root@2018");
+            //here project is database name, root is username and password is ics324
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery("select * from Company");
+            while (rs.next()) {
+                Log.d("LoginActivity", rs.getString(1) + "  " + rs.getString(2));
+                //rs.getInt(1) is the first column and rs.getString(2) is the second column..
+                //You have to take care of the mapping on your own here.
+
+
+            }
+            con.close();
+        } catch (Exception e) {
+            Log.d("LoginActivity", e.getMessage()+"XXXXXXXXXXX");
+        }
+
+        //////////////////////////////////////////////////////
+
         populateAutoComplete();
         DUMMY_CREDENTIALS = new ArrayList<>();
         DUMMY_CREDENTIALS.add("a@:12345");
