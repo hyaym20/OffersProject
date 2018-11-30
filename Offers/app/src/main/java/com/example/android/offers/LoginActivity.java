@@ -87,7 +87,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         try {
             Class.forName("com.mysql.jdbc.Driver");
             Connection con = DriverManager.getConnection(
-                    "jdbc:mysql://sql150.main-hosting.eu:3306/u572021306_ytuju", "u572021306_uxyze", "Root@2018");
+                    "jdbc:mysql://sql150.main-hosting.eu.:3306/u572021306_ytuju", "u572021306_uxyze", "Root@2018");
             //here project is database name, root is username and password is ics324
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery("select * from Company");
