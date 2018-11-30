@@ -26,7 +26,7 @@
 
         <activity
             android:name=".UserPage"
-            android:label="userPage"
+            android:label="Offers"
             android:parentActivityName=".LoginActivity"/>
     </application>
 
