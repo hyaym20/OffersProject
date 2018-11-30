@@ -9,7 +9,7 @@ public class UserPage extends AppCompatActivity {
 
     ViewPager viewPager;
     TabLayout tabLayout;
-  //  AlhasaFragmentAdapter fragmentAdapter;
+    UserFragmentAdapter fragmentAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -17,8 +17,8 @@ public class UserPage extends AppCompatActivity {
 
         viewPager = findViewById(R.id.view_pager);
         tabLayout = findViewById(R.id.tab_layout);
-       // fragmentAdapter = new AlhasaFragmentAdapter(getSupportFragmentManager());
-       // viewPager.setAdapter(fragmentAdapter);
+        fragmentAdapter = new UserFragmentAdapter(getSupportFragmentManager());
+        viewPager.setAdapter(fragmentAdapter);
         tabLayout.setupWithViewPager(viewPager);
 
     }
