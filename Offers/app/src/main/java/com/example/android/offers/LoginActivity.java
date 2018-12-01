@@ -3,6 +3,7 @@ package com.example.android.offers;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
@@ -25,6 +26,8 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethod;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -81,6 +84,18 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         setContentView(R.layout.activity_login);
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
+        mEmailView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    // Do whatever you want here
+                    return true;
+                }
+
+                return false;
+            }
+
+        });
 
 
 
@@ -89,10 +104,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         DUMMY_CREDENTIALS.add("a@:12345");
         DUMMY_CREDENTIALS.add("b@.54321");
         mPasswordView = (EditText) findViewById(R.id.password);
+
+
+
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
+                if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL ) {
                     attemptLogin();
                     return true;
                 }
@@ -104,6 +122,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
+                hideKeyboard();
                 attemptLogin();
             }
         });
@@ -162,6 +181,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * errors are presented and no actual login attempt is made.
      */
     private void attemptLogin() {
+        hideKeyboard();
         if (mAuthTask != null) {
             return;
         }
@@ -207,6 +227,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mAuthTask = new UserLoginTask(email, password);
             mAuthTask.execute((Void) null);
         }
+    }
+
+    public void hideKeyboard() {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+        //Hide:
+        imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
     }
 
     private boolean isEmailValid(String email) {
@@ -318,6 +344,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         private final String mEmail;
         private final String mPassword;
         private boolean isNewAccount = false;
+        private ArrayList<String> acounts = new ArrayList<>();
 
         UserLoginTask(String email, String password) {
             mEmail = email;
@@ -333,36 +360,36 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         @Override
         protected Boolean doInBackground(Void... params) {
             // TODO: attempt authentication against a network service.
-            Log.wtf("LoginActivity","Heeeeeereeeee~");
-            ////////////////////////////////////////////////////////////
             try {
+           // Log.wtf("LoginActivity","Heeeeeereeeee~");
+
+            ////////////////////////////////////////////////////////////
+
                 Class.forName("com.mysql.jdbc.Driver");
                 Connection con = DriverManager.getConnection(
                         "jdbc:mysql://sql150.main-hosting.eu:3306/u572021306_ytuju", "u572021306_uxyze", "Root@2018");
                 //here project is database name, root is username and password is ics324
-                Statement stmt = con.createStatement();
-                ResultSet rs = stmt.executeQuery("select * from Company");
-                while (rs.next()) {
-                    Log.wtf("LoginActivity", rs.getString(1) + "  " + rs.getString(2));
-                    //rs.getInt(1) is the first column and rs.getString(2) is the second column..
-                    //You have to take care of the mapping on your own here.
+                Statement stmt1 = con.createStatement();
+                Statement stmt2 = con.createStatement();
+                Statement stmt3 = con.createStatement();
+                ResultSet employees = stmt1.executeQuery("SELECT Mail,EPassword from Employee");
+                ResultSet users = stmt2.executeQuery("SELECT uMail,UPassword from Users");
 
-
+                while (employees.next()) {
+                    String Username = employees.getString(1);
+                    String Password = employees.getString(2);
+                    acounts.add(Username+":"+Password);
                 }
-                con.close();
-            } catch (Exception e) {
-                Log.wtf("LoginActivity", e.getMessage()+"XXXXXXXXXXX");
-            }
+                while (users.next()) {
+                    String Username = users.getString(1);
+                    String Password = users.getString(2);
+                    acounts.add(Username+":"+Password);
+                }
+
 
             //////////////////////////////////////////////////////
-            try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                return false;
-            }
 
-            for (String credential : DUMMY_CREDENTIALS ) {
+            for (String credential : acounts ) {
                 String[] pieces = credential.split(":");
                 if (pieces[0].equals(mEmail)) {
                     // Account exists, return true if the password matches.
@@ -372,8 +399,21 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
 
             // TODO: register the new account here.
-            DUMMY_CREDENTIALS.add(mEmail+":"+mPassword);
+                String sqlquery = "INSERT INTO Users (UID, uFName,uLName,uMail,uPassword)Values" +
+                        "("+"'"+Integer.toString(acounts.size()+1)+"'"+",null,null,"+"'"+mEmail+"'"+","+"'"+mPassword+"'"+");";
+                Log.wtf("LoginActivity",sqlquery);
+            stmt3.execute(sqlquery);
             isNewAccount = true;
+
+
+
+            con.close();
+            return false;
+            } catch (Exception e) {
+                Log.wtf("LoginActivity", e.getMessage()+"XXXXXXXXXXX");
+            }
+
+            Log.wtf("LoginActivity", "DEAD ZONE\nDEAD ZONE\nDEAD ZONE\nDEAD ZONE\nDEAD ZONE\nDEAD ZONE\n ");
 
             return false;
         }
@@ -397,6 +437,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 else
                 Toast.makeText(getBaseContext(),"Acocunt Created",Toast.LENGTH_LONG).show();
             }
+
         }
 
         @Override
@@ -405,5 +446,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             showProgress(false);
         }
     }
+
+
 }
 
