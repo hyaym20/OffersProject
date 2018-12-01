@@ -237,12 +237,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     private boolean isEmailValid(String email) {
         //TODO: Replace this with your own logic
-        return email.contains("@");
+        return email.contains("");
     }
 
     private boolean isPasswordValid(String password) {
         //TODO: Replace this with your own logic
-        return password.length() > 4;
+        return password.length() > 1;
     }
 
     /**
@@ -344,6 +344,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         private final String mEmail;
         private final String mPassword;
         private boolean isNewAccount = false;
+        private boolean isAdmin = false;
         private ArrayList<String> acounts = new ArrayList<>();
 
         UserLoginTask(String email, String password) {
@@ -378,12 +379,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 while (employees.next()) {
                     String Username = employees.getString(1);
                     String Password = employees.getString(2);
-                    acounts.add(Username+":"+Password);
+                    acounts.add(Username+":"+Password+":"+"1");
                 }
                 while (users.next()) {
                     String Username = users.getString(1);
                     String Password = users.getString(2);
-                    acounts.add(Username+":"+Password);
+                    acounts.add(Username+":"+Password+":"+"0");
                 }
 
 
@@ -393,7 +394,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 String[] pieces = credential.split(":");
                 if (pieces[0].equals(mEmail)) {
                     // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
+                    if( pieces[1].equals(mPassword)){
+                        if(pieces[2].toString().equals("1"))
+                        isAdmin = true;
+                        else isAdmin = false;
+                        con.close();
+                        return true;
+
+                    }
+
                 }
             }
 
@@ -404,7 +413,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 Log.wtf("LoginActivity",sqlquery);
             stmt3.execute(sqlquery);
             isNewAccount = true;
-
 
 
             con.close();
@@ -422,12 +430,19 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
             showProgress(false);
+            Log.wtf("LoginActivity", "is it a new account?: "+isNewAccount+" is it an admin?: "+ isAdmin);
 
             if (success) {
 
+                if(!isAdmin) {
+                    Intent userPageIntent = new Intent(LoginActivity.this, UserPage.class);
+                    startActivity(userPageIntent);
+                }
+                else if(isAdmin){
+                    Intent adminPageIntent = new Intent(LoginActivity.this, AdminPage.class);
+                    startActivity(adminPageIntent);
 
-                Intent userPageIntent = new Intent(LoginActivity.this, UserPage.class);
-                startActivity(userPageIntent);
+                }
 
             } else {
                 if (!isNewAccount) {

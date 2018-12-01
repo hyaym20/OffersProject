@@ -28,6 +28,11 @@
             android:name=".UserPage"
             android:label="Offers"
             android:parentActivityName=".LoginActivity"/>
+
+        <activity
+            android:name=".AdminPage"
+            android:label="Offers"
+            android:parentActivityName=".LoginActivity"/>
     </application>
 
 </manifest>
