@@ -3,6 +3,9 @@ package com.example.android.offers;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -31,20 +34,30 @@ import java.util.List;
 
 public class DemoUserPAge extends AppCompatActivity {
 
-    private ArrayList<OffersInfoAdapter> itemArrayList;  //List items Array
+    private static ArrayList<OffersInfoAdapter> itemArrayList;  //List items Array
     private MyAppAdapter myAppAdapter; //Array Adapter
-    private ListView listView ; // Listview
+    private static ListView listView ; // Listview
     private boolean success = false; // boolean
     private MySQLConnector connectionClass; //Connection Class Variable
+    ViewPager viewPager;
+    TabLayout tabLayout;
+    UserFragmentAdapter fragmentAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.demo_user_page);
 
-        listView = (ListView) findViewById(R.id.listView);  //findViewById(android.R.id.listView); //Listview Declaration
+        listView = (ListView) findViewById(R.id.list_view);  //findViewById(android.R.id.listView); //Listview Declaration
         connectionClass = new MySQLConnector(); // Connection Class Initialization
         itemArrayList = new ArrayList<OffersInfoAdapter>(); // Arraylist Initialization
+
+        viewPager = findViewById(R.id.view_pager);
+        fragmentAdapter = new UserFragmentAdapter(getSupportFragmentManager());
+        viewPager.setAdapter(fragmentAdapter);
+        tabLayout = findViewById(R.id.tab_layout);
+        tabLayout.setupWithViewPager(viewPager);
+
 
         // Calling Async Task
         SyncData orderData = new SyncData();
@@ -78,7 +91,7 @@ public class DemoUserPAge extends AppCompatActivity {
                 }
                 else {
                     // Change below query according to your own database.
-                    String query = "SELECT e.EID,e.DeviceName,o.discountPrice FROM Offer o Join Electronics e on o.OID = e.EID GROUP by o.OID UNION SELECT f.FID,f.name,o.discountPrice FROM Offer o Join Food f on o.OID = f.FID GROUP by o.OID";
+                    String query = "SELECT e.DeviceName,o.discountPrice,c.name from Electronics e join Offer o JOIN Product p JOIN Company c on o.ProductID = p.proID and  e.proID = p.proID and c.compID=p.compID  UNION SELECT f.name,o2.discountPrice,c2.name from Food f JOIN Offer o2 JOIN Product p2 JOIN Company c2 on o2.ProductID = p2.proID and  f.proID = p2.proID and c2.compID=p2.compID;";
                     Statement stmt = conn.createStatement();
                     ResultSet rs = stmt.executeQuery(query);
                     if (rs != null) // if resultset not null, I add items to itemArraylist using class created
@@ -121,9 +134,9 @@ public class DemoUserPAge extends AppCompatActivity {
             }
             else {
                 try {
-                    myAppAdapter = new MyAppAdapter(itemArrayList, DemoUserPAge.this);
+                  /*  myAppAdapter = new MyAppAdapter(itemArrayList, DemoUserPAge.this);
                     listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-                    listView.setAdapter(myAppAdapter);
+                    listView.setAdapter(myAppAdapter);*/
                 } catch (Exception ex)
                 {
 
@@ -151,7 +164,7 @@ public class DemoUserPAge extends AppCompatActivity {
             this.parkingList = apps;
             this.context = context;
             arraylist = new ArrayList<OffersInfoAdapter>();
-            arraylist.addAll(parkingList);
+            //arraylist.addAll(parkingList);
         }
 
         @Override
@@ -189,11 +202,46 @@ public class DemoUserPAge extends AppCompatActivity {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
             // here setting up names and images
-            viewHolder.textName.setText(parkingList.get(position).getName()+"\t"+parkingList.get(position).getMobileNumber()+"\t"+parkingList.get(position).getPlaceLocation());
+           // viewHolder.textName.setText(parkingList.get(position).getName()+"\t"+parkingList.get(position).getMobileNumber()+"\t"+parkingList.get(position).getPlaceLocation());
            // Picasso.with(context).load("http://"+parkingList.get(position).getImg()).into(viewHolder.imageView);
 
             return rowView;
         }
+    }
+    public static class DemoFoodFragment extends Fragment {
+
+
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+
+
+            /*
+            LayoutInflater inflater = getLayoutInflater();
+                rowView = inflater.inflate(R.layout.demo_list_conetent, parent, false);
+                viewHolder = new ViewHolder();
+                viewHolder.textName = (TextView) rowView.findViewById(R.id.textName);
+               //0 viewHolder.imageView = (ImageView) rowView.findViewById(R.id.imageView);
+                rowView.setTag(viewHolder);
+
+             */
+             inflater = getLayoutInflater();
+            View rootView = inflater.inflate(R.layout.fragment_list, container, false);
+           final ArrayList<OffersInfoAdapter> OffersInfoAdapters = new ArrayList<OffersInfoAdapter>();
+
+          //  OffersInfoAdapters.add(new OffersInfoAdapter(getString(R.string.type), getString(R.string.price), getString(R.string.location)));
+            for(int i=0;i<itemArrayList.size();i++){
+                OffersInfoAdapters.add(itemArrayList.get(i));
+            }
+            OffersAdapter adapter = new OffersAdapter(getActivity(), OffersInfoAdapters, R.color.blue);
+
+            listView = rootView.findViewById(R.id.list_view);
+            listView.setAdapter(adapter);
+
+            return rootView;
+        }
+
     }
 
 }

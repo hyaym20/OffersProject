@@ -30,6 +30,8 @@ public class UserPage extends AppCompatActivity {
         viewPager.setAdapter(fragmentAdapter);
         tabLayout.setupWithViewPager(viewPager);
 
+
+
     }
     public ArrayList<OffersInfoAdapter> getElectronicList(){
         return electronicList;

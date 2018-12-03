@@ -17,13 +17,13 @@ public class UserFragmentAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
        switch (position) {
             case 0:
-                return new FoodFragment();
+                return new DemoUserPAge.DemoFoodFragment() /*FoodFragment()*/;
            case 1:
-                return new FoodFragment();
+               return new DemoUserPAge.DemoFoodFragment() /*FoodFragment()*/;
             case 2:
-                return new FoodFragment();
+                return new DemoUserPAge.DemoFoodFragment() /*FoodFragment()*/;
             case 3:
-                return new FoodFragment();
+                return new DemoUserPAge.DemoFoodFragment() /*FoodFragment()*/;
         }
 
         return null;
