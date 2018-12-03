@@ -77,7 +77,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
-
+    private MySQLConnector mysqlconnector;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -370,6 +370,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 Connection con = DriverManager.getConnection(
                         "jdbc:mysql://sql150.main-hosting.eu:3306/u572021306_ytuju", "u572021306_uxyze", "Root@2018");
                 //here project is database name, root is username and password is ics324
+
+               //Connection con = mysqlconnector.CONN();
                 Statement stmt1 = con.createStatement();
                 Statement stmt2 = con.createStatement();
                 Statement stmt3 = con.createStatement();
@@ -435,7 +437,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             if (success) {
 
                 if(!isAdmin) {
-                    Intent userPageIntent = new Intent(LoginActivity.this, UserPage.class);
+                    Intent userPageIntent = new Intent(LoginActivity.this, DemoUserPAge.class);
                     startActivity(userPageIntent);
                 }
                 else if(isAdmin){

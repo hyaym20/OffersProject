@@ -33,6 +33,12 @@
             android:name=".AdminPage"
             android:label="Offers"
             android:parentActivityName=".LoginActivity"/>
-    </application>
+
+    <activity
+        android:name=".DemoUserPAge"
+        android:label="Offers"
+        android:parentActivityName=".LoginActivity"/>
+
+</application>
 
 </manifest>
