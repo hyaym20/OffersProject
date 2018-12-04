@@ -34,7 +34,7 @@ public class FoodFragment extends Fragment {
 
         OffersAdapter adapter = new OffersAdapter(getActivity(), OffersInfoAdapters, R.color.blue);
 
-        ListView listView = rootView.findViewById(R.id.list_view);
+        ListView listView = rootView.findViewById(android.R.id.list);
         listView.setAdapter(adapter);
 
         return rootView;
