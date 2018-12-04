@@ -21,13 +21,14 @@ public class UserFragmentAdapter extends FragmentPagerAdapter {
 
        switch (position) {
             case 0:
+
                 return ee;
            case 1:
                return ef;
-            case 2:
-                return ef;
-            case 3:
-                return ef;
+//            case 2:
+//                return ef;
+//            case 3:
+//                return ef;
         }
 
         notifyDataSetChanged();
@@ -35,9 +36,10 @@ public class UserFragmentAdapter extends FragmentPagerAdapter {
         return null;
     }
 
+
     @Override
     public int getCount() {
-        return 4;
+        return 2;
     }
 
     @Nullable

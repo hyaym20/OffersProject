@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -35,16 +36,26 @@ import java.util.List;
 
 public class DemoUserPAge extends AppCompatActivity {
 
-    private static ArrayList<OffersInfoAdapter> foodItemArrayList;  //List items Array
-    private static ArrayList<OffersInfoAdapter> electronicItemArrayList;
-    private MyAppAdapter myAppAdapter; //Array Adapter
+    private static ArrayList<OffersInfoAdapter> foodItemArrayList;  //Lists food items Array
+    private static ArrayList<OffersInfoAdapter> electronicItemArrayList;//Lists electronics items Array
+    private static ArrayList<OffersInfoAdapter>[] allItemsList;// 1--> Food 0--> electronics 2--> Games(not yet set)
+    //private MyAppAdapter myAppAdapter; //Array Adapter
     private static ListView listView; // Listview
     private boolean success = false; // boolean
-    private SwipeRefreshLayout swipeLayout;
+    public static ArrayList<String> sth;// To be filled
+    private static SwipeRefreshLayout swipeLayout0;
+    private static SwipeRefreshLayout swipeLayout1;
+    public static SyncData orderData;
+    public static RefreshData[] refreshData;
     private MySQLConnector connectionClass; //Connection Class Variable
     ViewPager viewPager;
     TabLayout tabLayout;
     UserFragmentAdapter fragmentAdapter;
+    static OffersAdapter adapter = null;
+    final String TAG = "abc";
+    public static int refreshCnt = 0;
+
+    
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,10 +64,31 @@ public class DemoUserPAge extends AppCompatActivity {
 
         listView = (ListView) findViewById(android.R.id.list); //Listview Declaration
         connectionClass = new MySQLConnector(); // Connection Class Initialization
-        foodItemArrayList = new ArrayList<OffersInfoAdapter>(); // Arraylist Initialization
-        electronicItemArrayList = new ArrayList<OffersInfoAdapter>();
+
+        allItemsList = new ArrayList[5];
+        //foodItemArrayList = new ArrayList<OffersInfoAdapter>(); // Arraylist Initialization
+        allItemsList[1] = new ArrayList<OffersInfoAdapter>(); // Food Initialization
+        //electronicItemArrayList = new ArrayList<OffersInfoAdapter>();
+        allItemsList[0] = new ArrayList<OffersInfoAdapter>(); // Electronic Initialization
+
         viewPager = findViewById(R.id.view_pager);
-       /* swipeLayout = (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
+
+
+        fragmentAdapter = new UserFragmentAdapter(getSupportFragmentManager());
+
+        viewPager.setAdapter(fragmentAdapter);
+        tabLayout = findViewById(R.id.tab_layout);
+        tabLayout.setupWithViewPager(viewPager);
+
+
+        // Calling Async Task
+        orderData = new SyncData();
+        orderData.execute("");
+        refreshData= new RefreshData[50];
+        for(int i=0;i<refreshData.length;i++)
+            refreshData[i] = new RefreshData();
+
+     /*   swipeLayout = (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
         swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -68,25 +100,13 @@ public class DemoUserPAge extends AppCompatActivity {
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);*/
 
-
-        fragmentAdapter = new UserFragmentAdapter(getSupportFragmentManager());
-
-        viewPager.setAdapter(fragmentAdapter);
-        tabLayout = findViewById(R.id.tab_layout);
-        tabLayout.setupWithViewPager(viewPager);
-
-
-        // Calling Async Task
-         SyncData orderData = new SyncData();
-        orderData.execute("");
-
-
     }
 
     // Async Task has three overrided methods,
     private class SyncData extends AsyncTask<String, String, String> {
         String msg = "Internet/DB_Credentials/Windows_FireWall_TurnOn Error, See Android Monitor in the bottom For details!";
         ProgressDialog progress;
+
 
         @Override
         protected void onPreExecute() //Starts the progress dailog
@@ -116,11 +136,12 @@ public class DemoUserPAge extends AppCompatActivity {
                     {
                         while (foodRs.next() || electronicRs.next()) {
                             try {
-                                if (foodRs.next())
-                                    foodItemArrayList.add(new OffersInfoAdapter(foodRs.getString(1), foodRs.getString(2), foodRs.getString(3)));
-                                if (electronicRs.next())
-                                    electronicItemArrayList.add(new OffersInfoAdapter(electronicRs.getString(1), electronicRs.getString(2), electronicRs.getString(3)));
-
+                                if (!foodRs.isAfterLast()) {
+                                    allItemsList[1].add(new OffersInfoAdapter(foodRs.getString(1), foodRs.getString(2), foodRs.getString(3)));
+                                }
+                                if (!electronicRs.isBeforeFirst()) {
+                                    allItemsList[0].add(new OffersInfoAdapter(electronicRs.getString(1), electronicRs.getString(2), electronicRs.getString(3)));
+                                }
                                 // itemArrayList.add(new OffersInfoAdapter(rs.getString("Fname"),rs.getString("Phone"),rs.getString("Mail")));
                             } catch (Exception ex) {
                                 ex.printStackTrace();
@@ -151,19 +172,20 @@ public class DemoUserPAge extends AppCompatActivity {
             if (success == false) {
             } else {
                 try {
-                  /*  myAppAdapter = new MyAppAdapter(itemArrayList, DemoUserPAge.this);
-                    listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-                    listView.setAdapter(myAppAdapter);*/
+                    adapter.notifyDataSetChanged();
+                    fragmentAdapter.notifyDataSetChanged();
                 } catch (Exception ex) {
 
                 }
 
             }
+            swipeLayout0.setRefreshing(false);
+            swipeLayout1.setRefreshing(false);
 
         }
     }
 
-    public class MyAppAdapter extends BaseAdapter         //has a class viewholder which holds
+    /*public class MyAppAdapter extends BaseAdapter         //has a class viewholder which holds
     {
         public class ViewHolder {
             TextView textName;
@@ -219,7 +241,7 @@ public class DemoUserPAge extends AppCompatActivity {
 
             return rowView;
         }
-    }
+    }*/
 
     public static class DemoFoodFragment extends Fragment {
 
@@ -227,29 +249,43 @@ public class DemoUserPAge extends AppCompatActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
+          /*  View rootView = inflater.inflate(R.layout.fragment_list, container, false);
+            final ArrayList<OffersInfoAdapter> OffersInfoAdapters = new ArrayList<OffersInfoAdapter>();
+
+            OffersInfoAdapters.add(new OffersInfoAdapter(getString(R.string.type), getString(R.string.price), getString(R.string.location)));
+
+            OffersAdapter adapter = new OffersAdapter(getActivity(), OffersInfoAdapters, R.color.blue);
+
+            ListView listView = rootView.findViewById(android.R.id.list);
+            listView.setAdapter(adapter);
+
+            return rootView;*/
 
 
-            /*
-            LayoutInflater inflater = getLayoutInflater();
-                rowView = inflater.inflate(R.layout.demo_list_conetent, parent, false);
-                viewHolder = new ViewHolder();
-                viewHolder.textName = (TextView) rowView.findViewById(R.id.textName);
-               //0 viewHolder.imageView = (ImageView) rowView.findViewById(R.id.imageView);
-                rowView.setTag(viewHolder);
-
-             */
             inflater = getLayoutInflater();
             View rootView = inflater.inflate(R.layout.fragment_list, container, false);
             final ArrayList<OffersInfoAdapter> OffersInfoAdapters = new ArrayList<OffersInfoAdapter>();
 
-            //  OffersInfoAdapters.add(new OffersInfoAdapter(getString(R.string.type), getString(R.string.price), getString(R.string.location)));
-          /*  for(int i=0;i<foodItemArrayList.size();i++){
-                OffersInfoAdapters.add(foodItemArrayList.get(i));
-            }*/
-            OffersAdapter adapter = new OffersAdapter(getActivity(), foodItemArrayList, R.color.blue);
+
+            adapter = new OffersAdapter(getActivity(), allItemsList[1], R.color.blue);
 
             listView = rootView.findViewById(android.R.id.list);
             listView.setAdapter(adapter);
+            adapter.notifyDataSetChanged();
+            swipeLayout1 = (SwipeRefreshLayout) rootView.findViewById(R.id.swiperefresh);
+            swipeLayout1.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    //swipeLayout.setRefreshing(tru);
+                    int currentCnt= refreshCnt;
+                    refreshData[refreshCnt].execute();
+
+
+                    return;
+                }
+
+            });
+            // listView.deferNotifyDataSetChanged();
 
             return rootView;
         }
@@ -257,37 +293,114 @@ public class DemoUserPAge extends AppCompatActivity {
 
 
     public static class DemoElectronicFragment extends Fragment {
-
-
+        View rootView;
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
-
-
-
-           /* LayoutInflater inflater = getLayoutInflater();
-                rowView = inflater.inflate(R.layout.demo_list_conetent, parent, false);
-                viewHolder = new ViewHolder();
-                viewHolder.textName = (TextView) rowView.findViewById(R.id.textName);
-               //0 viewHolder.imageView = (ImageView) rowView.findViewById(R.id.imageView);
-                rowView.setTag(viewHolder);*/
 
 
             inflater = getLayoutInflater();
             View rootView = inflater.inflate(R.layout.fragment_list, container, false);
             final ArrayList<OffersInfoAdapter> OffersInfoAdapters = new ArrayList<OffersInfoAdapter>();
 
-            //  OffersInfoAdapters.add(new OffersInfoAdapter(getString(R.string.type), getString(R.string.price), getString(R.string.location)));
-          /*  for(int i=0;i<electronicItemArrayList.size();i++){
-                OffersInfoAdapters.add(electronicItemArrayList.get(i));
-            }*/
-           OffersAdapter adapter = new OffersAdapter(getActivity(), electronicItemArrayList, R.color.blue);
+            adapter = new OffersAdapter(getActivity(), allItemsList[0], R.color.blue);
             listView = rootView.findViewById(android.R.id.list);
             listView.setAdapter(adapter);
+            adapter.notifyDataSetChanged();
+            swipeLayout0 = (SwipeRefreshLayout) rootView.findViewById(R.id.swiperefresh);
+            swipeLayout0.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    //swipeLayout.setRefreshing(tru);
+            int currentCnt= refreshCnt;
+                    refreshData[refreshCnt].execute();
 
+
+                    return;
+                }
+
+            });
             return rootView;
         }
 
+
+    }
+
+    public class RefreshData extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            String msg = new String();
+            {
+                try {
+
+
+                    //Connection conn = connectionClass.CONN(); //Connection Object
+                    Connection conn = DriverManager.getConnection(
+                            "jdbc:mysql://sql150.main-hosting.eu:3306/u572021306_ytuju", "u572021306_uxyze", "Root@2018");
+                    if (conn == null) {
+                        success = false;
+                    } else {
+                        // Change below query according to your own database.
+                        String electronicQuery = "SELECT e.DeviceName,o.discountPrice,c.name from Electronics e join Offer o JOIN Product p JOIN Company c on o.ProductID = p.proID and  e.proID = p.proID and c.compID=p.compID;";
+                        String foodQuery = "SELECT f.name,o2.discountPrice,c2.name from Food f JOIN Offer o2 JOIN Product p2 JOIN Company c2 on o2.ProductID = p2.proID and  f.proID = p2.proID and c2.compID=p2.compID;";
+                        Statement stmt1 = conn.createStatement();
+                        Statement stmt2 = conn.createStatement();
+                        ResultSet foodRs = stmt1.executeQuery(foodQuery);
+                        ResultSet electronicRs = stmt2.executeQuery(electronicQuery);
+                        allItemsList[0].clear();
+                        allItemsList[1].clear();
+                        if (foodRs != null && electronicRs != null) // if resultset not null, I add items to itemArraylist using class created
+                        {
+                            while (foodRs.next() || electronicRs.next()) {
+                                try {
+                                    if (!foodRs.isAfterLast())
+                                        allItemsList[1].add(new OffersInfoAdapter(foodRs.getString(1), foodRs.getString(2), foodRs.getString(3)));
+                                    if (!electronicRs.isAfterLast())
+                                        allItemsList[0].add(new OffersInfoAdapter(electronicRs.getString(1), electronicRs.getString(2), electronicRs.getString(3)));
+
+                                    // itemArrayList.add(new OffersInfoAdapter(rs.getString("Fname"),rs.getString("Phone"),rs.getString("Mail")));
+                                } catch (Exception ex) {
+                                    ex.printStackTrace();
+                                }
+                            }
+                            msg = "Found";
+                            success = true;
+                        } else {
+                            msg = "No Data found!";
+                            success = false;
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Writer writer = new StringWriter();
+                    e.printStackTrace(new PrintWriter(writer));
+                    msg = writer.toString();
+                    success = false;
+                }
+
+
+                return null;
+            }
+
+
+
+        }
+
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            swipeLayout0.setRefreshing(false);
+            Log.wtf(TAG,"Refreshed Page");
+            swipeLayout1.setRefreshing(false);
+            refreshCnt++;
+            adapter.notifyDataSetChanged();
+
+        }
     }
 }

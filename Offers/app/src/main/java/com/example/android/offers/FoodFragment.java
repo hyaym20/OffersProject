@@ -4,6 +4,7 @@ package com.example.android.offers;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,7 +21,7 @@ import java.util.ArrayList;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class FoodFragment extends Fragment {
+public class FoodFragment extends ListFragment {
 
 
     @Override
