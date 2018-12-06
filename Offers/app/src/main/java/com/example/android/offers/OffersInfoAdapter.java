@@ -22,6 +22,12 @@ public class OffersInfoAdapter {
         this.mobileNumber = mobileNumber;
         this.placeLocation = placeLocation;
     }
+    public OffersInfoAdapter(OffersInfoAdapter self){
+        this.name = self.name;
+        this.mobileNumber = self.mobileNumber;
+        this.placeLocation= self.placeLocation;
+
+    }
 
     public String getName() {
         return name;
