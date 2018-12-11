@@ -10,12 +10,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
 
-public class OffersAdapter extends ArrayAdapter<OffersInfoAdapter> {
+public class OffersAdapter extends ArrayAdapter<OffersInfoAdapter>  implements Filterable{
 
     private int colorResourceId;
 
@@ -41,10 +42,10 @@ public class OffersAdapter extends ArrayAdapter<OffersInfoAdapter> {
         textViewName.setText(currentInfo.getName());
 
         TextView textViewNumber =  listItemView.findViewById(R.id.text_number);
-        textViewNumber.setText(currentInfo.getMobileNumber());
+        textViewNumber.setText(currentInfo.getDiscountPrice());
 
         TextView textViewLocation = listItemView.findViewById(R.id.text_location);
-        textViewLocation.setText(currentInfo.getPlaceLocation());
+        textViewLocation.setText(currentInfo.getCompany());
 
         ImageView imageViewimage = listItemView.findViewById(R.id.imageId);
         if(currentInfo.hasImage()) {
@@ -63,5 +64,8 @@ public class OffersAdapter extends ArrayAdapter<OffersInfoAdapter> {
 
         return listItemView;
     }
+
+
+
 }
 

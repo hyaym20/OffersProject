@@ -3,22 +3,35 @@ package com.example.android.offers;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Filterable;
 //import com.squareup.picasso.Picasso;
 
 import com.example.android.offers.MySQLConnector;
@@ -47,6 +60,9 @@ public class DemoUserPAge extends AppCompatActivity {
     private static SwipeRefreshLayout swipeLayout1;
     public static SyncData orderData;
     public static RefreshData[] refreshData;
+    public FloatingActionButton searchButton;
+    public static EditText searchEditText;
+    public RadioGroup searchRadioGroup;
     private MySQLConnector connectionClass; //Connection Class Variable
     ViewPager viewPager;
     TabLayout tabLayout;
@@ -55,12 +71,13 @@ public class DemoUserPAge extends AppCompatActivity {
     final String TAG = "abc";
     public static int refreshCnt = 0;
 
-    
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.demo_user_page);
+
 
         listView = (ListView) findViewById(android.R.id.list); //Listview Declaration
         connectionClass = new MySQLConnector(); // Connection Class Initialization
@@ -100,7 +117,36 @@ public class DemoUserPAge extends AppCompatActivity {
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);*/
 
+
+
+
+        searchEditText = (EditText) findViewById(R.id.etSearch);
+        searchRadioGroup = (RadioGroup) findViewById(R.id.rgSearch);
+        searchButton = (FloatingActionButton) findViewById(R.id.search_button);
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(searchEditText.isShown()){
+                    searchEditText.setVisibility(View.GONE);
+                    searchRadioGroup.setVisibility(View.GONE);
+                    viewPager.setVisibility(View.VISIBLE);
+                    tabLayout.setVisibility(View.VISIBLE);
+                    searchButton.setImageResource(R.drawable.sharp_search_black_36);
+
+                }
+                else {
+                    searchEditText.setVisibility(View.VISIBLE);
+                    searchRadioGroup.setVisibility(View.VISIBLE);
+                    viewPager.setVisibility(View.GONE);
+                    tabLayout.setVisibility(View.GONE);
+                    searchButton.setImageResource(R.drawable.back_arrow);
+                }
+
+            }
+        });
+
     }
+
 
     // Async Task has three overrided methods,
     private class SyncData extends AsyncTask<String, String, String> {
@@ -126,8 +172,8 @@ public class DemoUserPAge extends AppCompatActivity {
                     success = false;
                 } else {
                     // Change below query according to your own database.
-                    String electronicQuery = "SELECT e.DeviceName,o.discountPrice,c.name from Electronics e join Offer o JOIN Product p JOIN Company c on o.ProductID = p.proID and  e.proID = p.proID and c.compID=p.compID";
-                    String foodQuery = "SELECT f.name,o2.discountPrice,c2.name from Food f JOIN Offer o2 JOIN Product p2 JOIN Company c2 on o2.ProductID = p2.proID and  f.proID = p2.proID and c2.compID=p2.compID;";
+                    String electronicQuery = "SELECT e.DeviceName,o.normalPriceRange,o.discountPrice,o.startDate,o.enddate,e.DeviceDescription,e.color,e.brand,c.name from Electronics e join Offer o JOIN Product p JOIN Company c on o.ProductID = p.proID and  e.proID = p.proID and c.compID=p.compID";
+                    String foodQuery = "SELECT f.name,o2.normalPriceRange,o2.discountPrice,o2.startDate,o2.enddate,c2.name from Food f JOIN Offer o2 JOIN Product p2 JOIN Company c2 on o2.ProductID = p2.proID and  f.proID = p2.proID and c2.compID=p2.compID";
                     Statement stmt1 = conn.createStatement();
                     Statement stmt2 = conn.createStatement();
                     ResultSet foodRs = stmt1.executeQuery(foodQuery);
@@ -137,10 +183,10 @@ public class DemoUserPAge extends AppCompatActivity {
                         while (foodRs.next() || electronicRs.next()) {
                             try {
                                 if (!foodRs.isAfterLast()) {
-                                    allItemsList[1].add(new OffersInfoAdapter(foodRs.getString(1), foodRs.getString(2), foodRs.getString(3)));
+                                    allItemsList[1].add(new OffersInfoAdapter(foodRs.getString(1), foodRs.getString(2), foodRs.getString(3), foodRs.getDate(4), foodRs.getDate(5), foodRs.getString(6)));
                                 }
-                                if (!electronicRs.isBeforeFirst()) {
-                                    allItemsList[0].add(new OffersInfoAdapter(electronicRs.getString(1), electronicRs.getString(2), electronicRs.getString(3)));
+                                if (!electronicRs.isAfterLast()) {
+                                    allItemsList[0].add(new OffersInfoAdapter(electronicRs.getString(1), electronicRs.getString(2), electronicRs.getString(3), electronicRs.getDate(4), electronicRs.getDate(5), electronicRs.getString(6), electronicRs.getString(7), electronicRs.getString(8), electronicRs.getString(9)));
                                 }
                                 // itemArrayList.add(new OffersInfoAdapter(rs.getString("Fname"),rs.getString("Phone"),rs.getString("Mail")));
                             } catch (Exception ex) {
@@ -174,6 +220,7 @@ public class DemoUserPAge extends AppCompatActivity {
                 try {
                     adapter.notifyDataSetChanged();
                     fragmentAdapter.notifyDataSetChanged();
+
                 } catch (Exception ex) {
 
                 }
@@ -304,6 +351,7 @@ public class DemoUserPAge extends AppCompatActivity {
             final ArrayList<OffersInfoAdapter> OffersInfoAdapters = new ArrayList<OffersInfoAdapter>();
 
             adapter = new OffersAdapter(getActivity(), allItemsList[0], R.color.blue);
+
             listView = rootView.findViewById(android.R.id.list);
             listView.setAdapter(adapter);
             adapter.notifyDataSetChanged();
@@ -320,6 +368,8 @@ public class DemoUserPAge extends AppCompatActivity {
                 }
 
             });
+
+
             return rootView;
         }
 
@@ -347,8 +397,8 @@ public class DemoUserPAge extends AppCompatActivity {
                         success = false;
                     } else {
                         // Change below query according to your own database.
-                        String electronicQuery = "SELECT e.DeviceName,o.discountPrice,c.name from Electronics e join Offer o JOIN Product p JOIN Company c on o.ProductID = p.proID and  e.proID = p.proID and c.compID=p.compID;";
-                        String foodQuery = "SELECT f.name,o2.discountPrice,c2.name from Food f JOIN Offer o2 JOIN Product p2 JOIN Company c2 on o2.ProductID = p2.proID and  f.proID = p2.proID and c2.compID=p2.compID;";
+                        String electronicQuery = "SELECT e.DeviceName,o.normalPriceRange,o.discountPrice,o.startDate,o.enddate,e.DeviceDescription,e.color,e.brand,c.name from Electronics e join Offer o JOIN Product p JOIN Company c on o.ProductID = p.proID and  e.proID = p.proID and c.compID=p.compID";
+                        String foodQuery = "SELECT f.name,o2.normalPriceRange,o2.discountPrice,o2.startDate,o2.enddate,c2.name from Food f JOIN Offer o2 JOIN Product p2 JOIN Company c2 on o2.ProductID = p2.proID and  f.proID = p2.proID and c2.compID=p2.compID";
                         Statement stmt1 = conn.createStatement();
                         Statement stmt2 = conn.createStatement();
                         ResultSet foodRs = stmt1.executeQuery(foodQuery);
@@ -360,9 +410,9 @@ public class DemoUserPAge extends AppCompatActivity {
                             while (foodRs.next() || electronicRs.next()) {
                                 try {
                                     if (!foodRs.isAfterLast())
-                                        allItemsList[1].add(new OffersInfoAdapter(foodRs.getString(1), foodRs.getString(2), foodRs.getString(3)));
+                                        allItemsList[1].add(new OffersInfoAdapter(foodRs.getString(1), foodRs.getString(2), foodRs.getString(3), foodRs.getDate(4), foodRs.getDate(5), foodRs.getString(6)));
                                     if (!electronicRs.isAfterLast())
-                                        allItemsList[0].add(new OffersInfoAdapter(electronicRs.getString(1), electronicRs.getString(2), electronicRs.getString(3)));
+                                        allItemsList[0].add(new OffersInfoAdapter(electronicRs.getString(1), electronicRs.getString(2), electronicRs.getString(3), electronicRs.getDate(4), electronicRs.getDate(5), electronicRs.getString(6), electronicRs.getString(7), electronicRs.getString(8), electronicRs.getString(9)));
 
                                     // itemArrayList.add(new OffersInfoAdapter(rs.getString("Fname"),rs.getString("Phone"),rs.getString("Mail")));
                                 } catch (Exception ex) {
@@ -403,4 +453,6 @@ public class DemoUserPAge extends AppCompatActivity {
 
         }
     }
+
+
 }

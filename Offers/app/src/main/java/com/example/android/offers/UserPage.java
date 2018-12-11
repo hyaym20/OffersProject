@@ -62,7 +62,7 @@ public class UserPage extends AppCompatActivity {
                     String name = electronics.getString(2);
                     String price = electronics.getString(4)+ " SR";
                     String brand = electronics.getString(3);
-                    electronicList.add(new OffersInfoAdapter(name,price,brand));
+                   // electronicList.add(new OffersInfoAdapter(name,price,brand));
                 }
                 con.close();
             } catch (Exception e) {

@@ -31,7 +31,7 @@ public class FoodFragment extends ListFragment {
         View rootView = inflater.inflate(R.layout.fragment_list, container, false);
         final ArrayList<OffersInfoAdapter> OffersInfoAdapters = new ArrayList<OffersInfoAdapter>();
 
-        OffersInfoAdapters.add(new OffersInfoAdapter(getString(R.string.type), getString(R.string.price), getString(R.string.location)));
+        //OffersInfoAdapters.add(new OffersInfoAdapter(getString(R.string.type), getString(R.string.price), getString(R.string.location)));
 
         OffersAdapter adapter = new OffersAdapter(getActivity(), OffersInfoAdapters, R.color.blue);
 
