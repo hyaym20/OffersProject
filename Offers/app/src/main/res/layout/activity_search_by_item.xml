@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ecebeb">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:gravity="center_horizontal"
+            android:text="Fill in to search for an item"
+            android:textColor="#1b1bf9"
+            android:textSize="26sp"
+            android:textStyle="bold" />
+
+        <View style="@style/Line" />
+
+        <TextView
+            style="@style/Question"
+            android:text="Which category ?" />
+
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RadioButton
+                style="@style/Answer"
+                android:id="@+id/Food_RadioButton"
+                android:text="Food" />
+
+            <RadioButton
+                style="@style/Answer"
+                android:id="@+id/Electronics_RadioButton"
+                android:text="Electronics" />
+
+            <RadioButton
+                android:id="@+id/Other_RadioButton"
+                style="@style/Answer"
+                android:text="Other" />
+
+
+        </RadioGroup>
+        <View style="@style/Line" />
+
+        <TextView
+            style="@style/Question"
+            android:text="Item name..." />
+
+        <EditText
+            android:id="@+id/item_name_Field"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:hint="Banana, IPhone 6, Milk ... etc"
+            android:inputType="textCapWords" />
+
+        <View style="@style/Line" />
+
+
+                <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:background="#de243a"
+            android:onClick="searchFor"
+            android:text="Search" />
+
+    </LinearLayout>
+
+
+</ScrollView>

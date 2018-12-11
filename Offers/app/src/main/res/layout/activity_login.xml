@@ -36,12 +36,17 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:src="@mipmap/ic_launcher_offer_round"/>
+
             <TextView
+                style="@style/welcome"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
-                android:text="@string/welcome"
-                style="@style/welcome"/>
+                android:text="@string/welcome" />
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"

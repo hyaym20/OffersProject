@@ -1,4 +1,4 @@
-package com.example.android.offers;
+package com.example.android.offers.Data;
 
 
 
@@ -13,6 +13,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.example.android.offers.R;
 
 import java.util.List;
 

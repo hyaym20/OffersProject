@@ -1,4 +1,4 @@
-package com.example.android.offers;
+package com.example.android.offers.Data;
 
 
 import java.sql.Date;
