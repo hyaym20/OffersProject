@@ -7,7 +7,6 @@
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.INTERNET" />
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher_foreground"
@@ -24,23 +23,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".OldUserPage"
             android:label="Offers"
-            android:parentActivityName=".LoginActivity" />
+            android:parentActivityName=".LoginActivity"/>
+
         <activity
             android:name=".AdminPage"
             android:label="Offers"
-            android:parentActivityName=".LoginActivity" />
-        <activity
-            android:name=".DemoUserPAge"
-            android:label="Offers"
-            android:parentActivityName=".LoginActivity" />
-        <activity android:name=".Data.SearchByItem">
-            android:label="Search"
-            android:parentActivityName=".UserPage"
-        </activity>
-    </application>
+            android:parentActivityName=".LoginActivity"/>
 
     <activity
         android:name=".UserPage"
