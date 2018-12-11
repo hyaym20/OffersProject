@@ -48,7 +48,7 @@ public class OffersAdapter extends ArrayAdapter<OffersInfoAdapter>  implements F
         textViewLocation.setText(currentInfo.getCompany());
 
         ImageView imageViewimage = listItemView.findViewById(R.id.imageId);
-        if(currentInfo.hasImage()) {
+       /* if(currentInfo.hasImage()) {
             imageViewimage.setImageResource(currentInfo.getImage());
             // Return the whole list item layout (containing 2 TextViews and an ImageView)
             // so that it can be shown in the ListView
@@ -57,7 +57,7 @@ public class OffersAdapter extends ArrayAdapter<OffersInfoAdapter>  implements F
             imageViewimage.setVisibility(View.GONE);
 
         }
-
+*/
         View textContainer = listItemView.findViewById(R.id.container);
         int color = ContextCompat.getColor(getContext(),colorResourceId);
         textContainer.setBackgroundColor(color);

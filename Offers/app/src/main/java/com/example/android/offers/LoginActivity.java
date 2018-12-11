@@ -339,8 +339,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      */
     public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
+
         private final String mEmail;
         private final String mPassword;
+        private String sessionID;
         private boolean isNewAccount = false;
         private boolean isAdmin = false;
         private ArrayList<String> acounts = new ArrayList<>();
@@ -373,18 +375,26 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 Statement stmt1 = con.createStatement();
                 Statement stmt2 = con.createStatement();
                 Statement stmt3 = con.createStatement();
-                ResultSet employees = stmt1.executeQuery("SELECT Mail,EPassword from Employee");
-                ResultSet users = stmt2.executeQuery("SELECT uMail,UPassword from Users");
+                ResultSet employees = stmt1.executeQuery("SELECT Mail,EPassword,LID from Employee");
+                ResultSet users = stmt2.executeQuery("SELECT uMail,UPassword,UID from Users");
 
                 while (employees.next()) {
+
                     String Username = employees.getString(1);
                     String Password = employees.getString(2);
-                    acounts.add(Username+":"+Password+":"+"1");
+                    String ID = employees.getString(3);
+                    acounts.add(Username+":"+Password+":"+"1"+":"+ID);
+                    Log.wtf("abc",Username);
+
+
+
                 }
                 while (users.next()) {
                     String Username = users.getString(1);
                     String Password = users.getString(2);
-                    acounts.add(Username+":"+Password+":"+"0");
+                    String ID = users.getString(3);
+                    acounts.add(Username+":"+Password+":"+"0"+":"+ID);
+                    Log.wtf("abc",Username);
                 }
 
 
@@ -393,17 +403,21 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             for (String credential : acounts ) {
                 String[] pieces = credential.split(":");
                 if (pieces[0].equals(mEmail)) {
+                    Log.wtf("abc","Email Correct");
                     // Account exists, return true if the password matches.
                     if( pieces[1].equals(mPassword)){
                         if(pieces[2].toString().equals("1"))
                         isAdmin = true;
                         else isAdmin = false;
                         con.close();
+                        sessionID = pieces[3];
                         return true;
 
                     }
 
                 }
+                Log.wtf("abc","Email Not Correct");
+
             }
 
 
@@ -440,6 +454,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 }
                 else if(isAdmin){
                     Intent adminPageIntent = new Intent(LoginActivity.this, AdminPage.class);
+                    adminPageIntent.putExtra("SESSION_GMAIL",mEmail);
+                    adminPageIntent.putExtra("SESSION_EMP_ID", sessionID);
                     startActivity(adminPageIntent);
 
                 }
