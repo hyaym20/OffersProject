@@ -15,8 +15,8 @@ public class AdminFragmentAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        UserPage.DemoElectronicFragment ee = new UserPage.DemoElectronicFragment()/*FoodFragment()*/;
-        UserPage.DemoFoodFragment ef = new UserPage.DemoFoodFragment();
+        AdminPage.DemoElectronicFragment ee = new AdminPage.DemoElectronicFragment()/*FoodFragment()*/;
+        AdminPage.DemoFoodFragment ef = new AdminPage.DemoFoodFragment();
 
         switch (position) {
             case 0:
@@ -46,9 +46,9 @@ public class AdminFragmentAdapter extends FragmentPagerAdapter {
     public CharSequence getPageTitle(int position) {
         switch (position) {
             case 0:
-                return "Added Offers";
+                return "Added Electronics";
             case 1:
-                return "Company Offers";
+                return "Added Food";
             case 2:
                 return "Games";
             case 3:

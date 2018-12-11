@@ -46,17 +46,17 @@ public class AdminPage extends AppCompatActivity {
     private static ListView listView; // Listview
     private boolean success = false; // boolean
     public static ArrayList<String> sth;// To be filled
-    /*private static SwipeRefreshLayout swipeLayout0;
-    private static SwipeRefreshLayout swipeLayout1;*/
+    private static SwipeRefreshLayout swipeLayout0;
+    private static SwipeRefreshLayout swipeLayout1;
     public static SyncData orderData;
-    //public static RefreshData[] refreshData;
+    public static RefreshData[] refreshData;
     public FloatingActionButton searchButton;
     public static EditText searchEditText;
     public RadioGroup searchRadioGroup;
     private MySQLConnector connectionClass; //Connection Class Variable
     ViewPager viewPager;
     TabLayout tabLayout;
-    public String sessionID = "6";//getIntent().getStringExtra("SESSION_EMP_ID");
+    public String sessionID ;
     AdminFragmentAdapter fragmentAdapter;
     static AdminAdapter adapter = null;
     final String TAG = "abc";
@@ -69,7 +69,7 @@ public class AdminPage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.demo_user_page);
 
-
+sessionID = getIntent().getStringExtra("SESSION_EMP_ID");
         listView = (ListView) findViewById(android.R.id.list); //Listview Declaration
         connectionClass = new MySQLConnector(); // Connection Class Initialization
 
@@ -92,9 +92,9 @@ public class AdminPage extends AppCompatActivity {
         // Calling Async Task
         orderData = new SyncData();
         orderData.execute("");
-//        refreshData= new RefreshData[50];
-//        for(int i=0;i<refreshData.length;i++)
-//            refreshData[i] = new RefreshData();
+        refreshData= new RefreshData[50];
+        for(int i=0;i<refreshData.length;i++)
+            refreshData[i] = new RefreshData();
 
      /*   swipeLayout = (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
         swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -314,7 +314,7 @@ public class AdminPage extends AppCompatActivity {
             listView = rootView.findViewById(android.R.id.list);
             listView.setAdapter(adapter);
             adapter.notifyDataSetChanged();
-           /* swipeLayout1 = (SwipeRefreshLayout) rootView.findViewById(R.id.swiperefresh);
+            swipeLayout1 = (SwipeRefreshLayout) rootView.findViewById(R.id.swiperefresh);
             swipeLayout1.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
                 public void onRefresh() {
@@ -326,7 +326,7 @@ public class AdminPage extends AppCompatActivity {
                     return;
                 }
 
-            });*/
+            });
             // listView.deferNotifyDataSetChanged();
 
             return rootView;
@@ -350,19 +350,19 @@ public class AdminPage extends AppCompatActivity {
             listView = rootView.findViewById(android.R.id.list);
             listView.setAdapter(adapter);
             adapter.notifyDataSetChanged();
-//            swipeLayout0 = (SwipeRefreshLayout) rootView.findViewById(R.id.swiperefresh);
-//            swipeLayout0.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-//                @Override
-//                public void onRefresh() {
-//                    //swipeLayout.setRefreshing(tru);
-//                    int currentCnt= refreshCnt;
-//                    refreshData[refreshCnt].execute();
-//
-//
-//                    return;
-//                }
-//
-//            });
+           swipeLayout0 = (SwipeRefreshLayout) rootView.findViewById(R.id.swiperefresh);
+            swipeLayout0.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                   //swipeLayout.setRefreshing(tru);
+                    int currentCnt= refreshCnt;
+                    refreshData[refreshCnt].execute();
+
+
+                    return;
+                }
+
+            });
 
 
             return rootView;
@@ -371,88 +371,88 @@ public class AdminPage extends AppCompatActivity {
 
     }
 
-//    public class RefreshData extends AsyncTask<Void, Void, Void> {
-//
-//        @Override
-//        protected void onPreExecute() {
-//            super.onPreExecute();
-//        }
-//
-//        @Override
-//        protected Void doInBackground(Void... voids) {
-//            String msg = new String();
-//            {
-//                try {
-//
-//
-//                    //Connection conn = connectionClass.CONN(); //Connection Object
-//                    Connection conn = DriverManager.getConnection(
-//                            "jdbc:mysql://sql150.main-hosting.eu:3306/u572021306_ytuju", "u572021306_uxyze", "Root@2018");
-//                    if (conn == null) {
-//                        success = false;
-//                    } else {
-//                        // Change below query according to your own database.
-//                        String electronicQuery = "SELECT e.LID,el.DeviceName,o.normalPriceRange,o.discountPrice from Offer o  join RegisteredBY r join Employee e join Electronics el\n" +
-//                                "on r.LID = e.LID and o.OID = r.OID  and el.proID = o.ProductID\n" +
-//                                "where r.lid ="+sessionID;
-//                        String foodQuery = "SELECT e.LID,f.name,o.normalPriceRange,o.discountPrice from Offer o  join RegisteredBY r join Employee e join Food f\n" +
-//                                "on r.LID = e.LID and o.OID = r.OID  and f.proID = o.ProductID\n" +
-//                                "where e.lid ="+sessionID;
-//                        Statement stmt1 = conn.createStatement();
-//                        Statement stmt2 = conn.createStatement();
-//                        ResultSet foodRs = stmt1.executeQuery(foodQuery);
-//                        ResultSet electronicRs = stmt2.executeQuery(electronicQuery);
-//                        allItemsList[0].clear();
-//                        allItemsList[1].clear();
-//                        if (foodRs != null && electronicRs != null) // if resultset not null, I add items to itemArraylist using class created
-//                        {
-//                            while (foodRs.next() || electronicRs.next()) {
-//                                try {
-//                                    if (!foodRs.isAfterLast()) {
-//                                        allItemsList[1].add(new AdminInfoAdapter( foodRs.getString(2), foodRs.getString(3), foodRs.getString(4)));
-//                                    }
-//                                    if (!electronicRs.isAfterLast()) {
-//                                        allItemsList[0].add(new AdminInfoAdapter( electronicRs.getString(2), electronicRs.getString(3), electronicRs.getString(4)));
-//                                    }
-//                                    // itemArrayList.add(new AdminInfoAdapter(rs.getString("Fname"),rs.getString("Phone"),rs.getString("Mail")));
-//                                } catch (Exception ex) {
-//                                    ex.printStackTrace();
-//                                }
-//                            }
-//                            msg = "Found";
-//                            success = true;
-//                        } else {
-//                            msg = "No Data found!";
-//                            success = false;
-//                        }
-//                    }
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                    Writer writer = new StringWriter();
-//                    e.printStackTrace(new PrintWriter(writer));
-//                    msg = writer.toString();
-//                    success = false;
-//                }
-//
-//
-//                return null;
-//            }
-//
-//
-//
-//        }
-//
-//
-//        @Override
-//        protected void onPostExecute(Void aVoid) {
-//            swipeLayout0.setRefreshing(false);
-//            Log.wtf(TAG,"Refreshed Page");
-//            swipeLayout1.setRefreshing(false);
-//            refreshCnt++;
-//            adapter.notifyDataSetChanged();
-//
-//        }
-//    }
+    public class RefreshData extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            String msg = new String();
+            {
+                try {
+
+
+                    //Connection conn = connectionClass.CONN(); //Connection Object
+                    Connection conn = DriverManager.getConnection(
+                            "jdbc:mysql://sql150.main-hosting.eu:3306/u572021306_ytuju", "u572021306_uxyze", "Root@2018");
+                    if (conn == null) {
+                        success = false;
+                    } else {
+                        // Change below query according to your own database.
+                        String electronicQuery = "SELECT e.LID,el.DeviceName,o.normalPriceRange,o.discountPrice from Offer o  join RegisteredBY r join Employee e join Electronics el\n" +
+                                "on r.LID = e.LID and o.OID = r.OID  and el.proID = o.ProductID\n" +
+                                "where r.lid ="+sessionID;
+                      String foodQuery = "SELECT e.LID,f.name,o.normalPriceRange,o.discountPrice from Offer o  join RegisteredBY r join Employee e join Food f\n" +
+                                "on r.LID = e.LID and o.OID = r.OID  and f.proID = o.ProductID\n" +
+                                "where e.lid ="+sessionID;
+                        Statement stmt1 = conn.createStatement();
+                        Statement stmt2 = conn.createStatement();
+                        ResultSet foodRs = stmt1.executeQuery(foodQuery);
+                        ResultSet electronicRs = stmt2.executeQuery(electronicQuery);
+                        allItemsList[0].clear();
+                        allItemsList[1].clear();
+                        if (foodRs != null && electronicRs != null) // if resultset not null, I add items to itemArraylist using class created
+                        {
+                            while (foodRs.next() || electronicRs.next()) {
+                                try {
+                                    if (!foodRs.isAfterLast()) {
+                                        allItemsList[1].add(new AdminInfoAdapter( foodRs.getString(2), foodRs.getString(3), foodRs.getString(4)));
+                                    }
+                                    if (!electronicRs.isAfterLast()) {
+                                        allItemsList[0].add(new AdminInfoAdapter( electronicRs.getString(2), electronicRs.getString(3), electronicRs.getString(4)));
+                                    }
+                                    // itemArrayList.add(new AdminInfoAdapter(rs.getString("Fname"),rs.getString("Phone"),rs.getString("Mail")));
+                                } catch (Exception ex) {
+                                    ex.printStackTrace();
+                               }
+                           }
+                            msg = "Found";
+                            success = true;
+                        } else {
+                            msg = "No Data found!";
+                            success = false;
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Writer writer = new StringWriter();
+                    e.printStackTrace(new PrintWriter(writer));
+                    msg = writer.toString();
+                    success = false;
+                }
+
+
+                return null;
+            }
+
+
+
+        }
+
+
+       @Override
+       protected void onPostExecute(Void aVoid) {
+            swipeLayout0.setRefreshing(false);
+            Log.wtf(TAG,"Refreshed Page");
+            swipeLayout1.setRefreshing(false);
+            refreshCnt++;
+            adapter.notifyDataSetChanged();
+
+        }
+    }
 
 
 }
