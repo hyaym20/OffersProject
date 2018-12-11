@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.view.ViewGroup;
 
 public class UserFragmentAdapter extends FragmentPagerAdapter {
 
@@ -16,8 +15,8 @@ public class UserFragmentAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        DemoUserPAge.DemoElectronicFragment ee = new DemoUserPAge.DemoElectronicFragment()/*FoodFragment()*/;
-        DemoUserPAge.DemoFoodFragment ef = new DemoUserPAge.DemoFoodFragment();
+        UserPage.DemoElectronicFragment ee = new UserPage.DemoElectronicFragment()/*FoodFragment()*/;
+        UserPage.DemoFoodFragment ef = new UserPage.DemoFoodFragment();
 
        switch (position) {
             case 0:

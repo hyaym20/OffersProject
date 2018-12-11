@@ -26,7 +26,6 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethod;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -35,7 +34,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.lang.reflect.Array;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -437,7 +435,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             if (success) {
 
                 if(!isAdmin) {
-                    Intent userPageIntent = new Intent(LoginActivity.this, DemoUserPAge.class);
+                    Intent userPageIntent = new Intent(LoginActivity.this, UserPage.class);
                     startActivity(userPageIntent);
                 }
                 else if(isAdmin){
