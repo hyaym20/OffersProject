@@ -6,18 +6,7 @@
     android:layout_height="match_parent"
     tools:context="com.example.android.offers.UserPage">
 
-    <!--<TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/Textvv"
-        android:paddingTop="20dp"
-        android:paddingBottom="20dp"
-        android:gravity="center"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:text="My ListView App Using MSSQL+JDBC"/>
 
--->
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/search_button"
         android:layout_width="50dp"
@@ -26,57 +15,99 @@
         android:layout_alignParentRight="true"
         android:layout_margin="@dimen/fab_margin"
         android:src="@drawable/sharp_search_black_36"/>
-    <EditText
-        android:imeOptions="actionSearch"
-        android:id="@+id/etSearch"
-        android:layout_width="fill_parent"
+
+    <ScrollView
+        android:id="@+id/Search_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#72ecebeb"
+        android:visibility="gone">
+
+
+    <LinearLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+
+    <TextView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="text"
-        android:hint="search"
-        android:visibility="gone"
-        />
+        android:layout_margin="16dp"
+        android:gravity="center_horizontal"
+        android:text="Fill in to search for an item"
+        android:textColor="#1b1bf9"
+        android:textSize="26sp"
+        android:textStyle="bold" />
 
-    <RadioGroup
-        android:id="@+id/rgSearch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/etSearch"
-        android:orientation="horizontal"
-        android:visibility="gone"
+    <View style="@style/Line" />
 
 
-        >
+        <TextView
+            style="@style/Question"
+            android:text="Which category ?" />
 
-        <RadioButton
-        android:id="@+id/nameRB"
-            android:layout_width="match_parent"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-        android:text="Name         " />
-
-        <RadioButton
-            android:id="@+id/priceRB"
+        <RadioGroup
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:orientation="horizontal">
 
-            android:text="Price     " />
+            <RadioButton
+                style="@style/Answer"
+                android:id="@+id/Food_RadioButton"
+                android:text="Food" />
 
-        <RadioButton
-            android:id="@+id/companyRB"
+            <RadioButton
+                style="@style/Answer"
+                android:id="@+id/Electronics_RadioButton"
+                android:text="Electronics" />
+
+            <RadioButton
+                android:id="@+id/Other_RadioButton"
+                style="@style/Answer"
+                android:text="Other" />
+
+
+        </RadioGroup>
+        <View style="@style/Line" />
+
+        <TextView
+            style="@style/Question"
+            android:text="Item name..." />
+
+        <EditText
+            android:id="@+id/item_name_Field"
             android:layout_width="match_parent"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="Company  " />
-    </RadioGroup>
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:hint="Banana, IPhone 6, Milk ... etc"
+            android:inputType="textCapWords" />
+
+        <View style="@style/Line" />
+
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:background="#de243a"
+            android:text="Search" />
+    </LinearLayout>
+    </ScrollView>
+
+
 
     <android.support.design.widget.TabLayout
         android:id="@+id/tab_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:tabIndicatorColor="#d22f2f"
-        android:layout_below="@id/etSearch"
+        android:layout_below="@id/Search_layout"
         app:tabSelectedTextColor="#f34336" />
+
+
    <!-- <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -84,6 +115,7 @@
         android:layout_below="@+id/tab_layout"
         android:choiceMode="multipleChoice"
         android:id="@+id/listView" /> -->
+
     <android.support.v4.view.ViewPager
         android:id="@+id/view_pager"
         android:layout_width="match_parent"

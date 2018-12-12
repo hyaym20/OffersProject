@@ -1,3 +1,4 @@
+
 <resources>
     <string name="app_name">Offers</string>
 
@@ -19,4 +20,9 @@
     <string name="type">Banana</string>
     <string name="price">20 SR</string>
     <string name="location">Al-Othaim Mall</string>
+
+    <!-- String related to the user page-->
+    <string name="it_s_a_product_lonely_here">It\'s a product lonely here...</string>
+    <string name="no_offers">No offers yet!</string>
+
 </resources>

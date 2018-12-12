@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RadioGroup;
+import android.widget.ScrollView;
 import android.widget.Toast;
 //import com.squareup.picasso.Picasso;
 
@@ -43,6 +44,7 @@ public class UserPage extends AppCompatActivity {
     public static RefreshData[] refreshData;
     public FloatingActionButton searchButton;
     public static EditText searchEditText;
+    public static ScrollView searchLayout;
     public RadioGroup searchRadioGroup;
     private MySQLConnector connectionClass; //Connection Class Variable
     ViewPager viewPager;
@@ -101,23 +103,23 @@ public class UserPage extends AppCompatActivity {
 
 
 
-        searchEditText = (EditText) findViewById(R.id.etSearch);
-        searchRadioGroup = (RadioGroup) findViewById(R.id.rgSearch);
+
+        searchLayout = (ScrollView) findViewById(R.id.Search_layout);
         searchButton = (FloatingActionButton) findViewById(R.id.search_button);
+
+
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(searchEditText.isShown()){
-                    searchEditText.setVisibility(View.GONE);
-                    searchRadioGroup.setVisibility(View.GONE);
+                    searchLayout.setVisibility(View.GONE);
                     viewPager.setVisibility(View.VISIBLE);
                     tabLayout.setVisibility(View.VISIBLE);
                     searchButton.setImageResource(R.drawable.sharp_search_black_36);
 
                 }
                 else {
-                    searchEditText.setVisibility(View.VISIBLE);
-                    searchRadioGroup.setVisibility(View.VISIBLE);
+                    searchLayout.setVisibility(View.VISIBLE);
                     viewPager.setVisibility(View.GONE);
                     tabLayout.setVisibility(View.GONE);
                     searchButton.setImageResource(R.drawable.back_arrow);
